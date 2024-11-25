@@ -14,4 +14,15 @@ public class BootController {
     {
         System.exit(0);
     }
+
+    /**
+     * 重启
+     */
+    @RequestMapping(value = "/restart")
+    public void restart()
+    {
+        System.exit(1);
+    }
+
+
 }

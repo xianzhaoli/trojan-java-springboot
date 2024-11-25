@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void usedFlow(String token, int used) {
         map.get(token).getCurrentUsedFlow().addAndGet(used);
-        System.out.println("usedFlow: " + used);
+//        System.out.println("usedFlow: " + used);
     }
 
 
