@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: trojan-java
+proxy-server:
+  ssl:
+    cert: /config/ssl/fullchain.pem
+    key: /config/ssl/privkey.pem
+trojan:
+  port: 8443
+  bossThreads: 1
+  workerThreads: 8
+center-server:
+  host: 101.126.16.228
+  port: 8901
+server:
+  port: 9312
