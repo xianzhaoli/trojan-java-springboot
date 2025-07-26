@@ -103,11 +103,11 @@ public class TrojanMessageHandler extends ChannelInboundHandlerAdapter {
             promise.addListener(futureListener -> {
                 final Channel outboundChannel = (Channel) futureListener.getNow();
                 if (futureListener.isSuccess()) {
-                    outboundChannel.pipeline().addLast(new RelayHandler(userChannel,userService, trojanKey));
+                    outboundChannel.pipeline().addLast(new RelayHandler(userChannel, userService, trojanKey));
                     ChannelPipeline userChannelPipeline = userChannel.pipeline();
                     userChannelPipeline.addLast(new TrojanUdpPacketEncoder());
                     userChannelPipeline.addLast(new TrojanUdpPacketDecoder());
-                    userChannelPipeline.addLast(new RelayHandler(outboundChannel,userService, trojanKey));
+                    userChannelPipeline.addLast(new RelayHandler(outboundChannel, userService, trojanKey));
                     userChannelPipeline.remove(FlowControlHandler.class);
                     userChannel.config().setAutoRead(true);
                     if (payload != null) {
@@ -164,7 +164,13 @@ public class TrojanMessageHandler extends ChannelInboundHandlerAdapter {
 //            buf.readerIndex(0);
 //            log.info("proxy send data : remoteAddr:{}      data:{}", outboundChannel.remoteAddress(), HexUtil.encodeHexStr(bytes));
             Future<Void> responseFuture = outboundChannel.writeAndFlush(writeData);
-            responseFuture.addListener(channelFuture -> bindChannel(inboundChannel, outboundChannel, token));
+            responseFuture.addListener(channelFuture -> {
+                if (channelFuture.isSuccess()) {
+                    bindChannel(inboundChannel, outboundChannel, token);
+                } else {
+                    TrojanServerUtils.closeOnFlush(outboundChannel);
+                }
+            });
         } else {
             bindChannel(inboundChannel, outboundChannel, token);
         }

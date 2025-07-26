@@ -11,6 +11,5 @@ public class CenterServerConfig {
 
     private String host;
 
-    private int port;
 
 }

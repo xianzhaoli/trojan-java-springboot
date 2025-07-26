@@ -10,7 +10,6 @@ trojan:
   bossThreads: 1
   workerThreads: 8
 center-server:
-  host: localhost
-  port: 8901
+  host: 101.126.16.228
 server:
   port: 9312
