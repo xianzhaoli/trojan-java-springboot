@@ -1,4 +1,4 @@
-trojan 基于 java 的实现
+trojan 基于java的实现
 
 1、支持TLS加密。
 2、支持流量统计。
