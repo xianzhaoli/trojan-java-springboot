@@ -13,6 +13,7 @@ import io.netty.channel.*;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.flow.FlowControlHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
@@ -41,11 +42,12 @@ public class TrojanMessageHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof TrojanMessage) {
             // 直接删除当前 handler 和 解码器
             ctx.pipeline().remove(TrojanDecoder.class);
+            ctx.pipeline().remove(HttpServerCodec.class);
+            ctx.pipeline().remove(HttpMessageHandler.class);
             // ctx.pipeline().remove(TrojanMessageHandler.class);
             handleTrojanMessage(ctx, (TrojanMessage) msg);
         }
         ctx.fireChannelRead(msg);
-
     }
 
     private void handleTrojanMessage(ChannelHandlerContext ctx, TrojanMessage trojanMessage) throws Exception {

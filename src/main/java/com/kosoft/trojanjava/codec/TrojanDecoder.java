@@ -22,7 +22,10 @@ public class TrojanDecoder extends ByteToMessageDecoder {
         int hashLength = 56;
         String trojanKey = in.readCharSequence(hashLength, StandardCharsets.UTF_8).toString();
         if (in.readByte() != '\r' || in.readByte() != '\n'){
-            channelHandlerContext.close();
+
+// 不是 trojan 协议，还原读指针并跳过处理，交给下一个 handler
+            in.resetReaderIndex();
+            channelHandlerContext.pipeline().remove(this); // 移除自己，避免重复尝试
             return;
         }
 
@@ -30,8 +33,8 @@ public class TrojanDecoder extends ByteToMessageDecoder {
 
         // 后续两个是 CRLF
         if (in.readByte() != '\r' || in.readByte() != '\n') {
-            in.readerIndex(0);
-            throw new TrojanProtocolException(ERROR_REQUEST_MESSAGE, in.copy());
+            in.resetReaderIndex();
+            channelHandlerContext.pipeline().remove(this);
         }
 
         // 载荷
